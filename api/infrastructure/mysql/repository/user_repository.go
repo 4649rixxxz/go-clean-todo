@@ -52,3 +52,19 @@ func (r *userRepository) FetchByEmail(email string) (*userDomain.User, error) {
 		&userORM.DeletedAt.Time,
 	), nil
 }
+
+func (r *userRepository) FetchByUserID(userID uint) (*userDomain.User, error) {
+	var userORM mysql.User
+	if err := r.db.First(&userORM, userID).Error; err != nil {
+		return nil, err
+	}
+
+	return userDomain.Reconstruct(
+		userORM.UserID,
+		userORM.Email,
+		userORM.Password,
+		userORM.CreatedAt,
+		userORM.UpdatedAt,
+		&userORM.DeletedAt.Time,
+	), nil
+}
