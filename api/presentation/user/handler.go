@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,20 +9,17 @@ import (
 )
 
 type handler struct {
-	SignupUserUsecase  *userUsecase.SignupUserUsecase
-	SigninUserUsecase  *userUsecase.SigninUserUsecase
-	SignoutUserUsecase *userUsecase.SignoutUserUsecase
+	SignupUserUsecase *userUsecase.SignupUserUsecase
+	SigninUserUsecase *userUsecase.SigninUserUsecase
 }
 
 func NewHandler(
 	SignupUserUsecase *userUsecase.SignupUserUsecase,
 	SigninUserUsecase *userUsecase.SigninUserUsecase,
-	SignoutUserUsecase *userUsecase.SignoutUserUsecase,
 ) handler {
 	return handler{
-		SignupUserUsecase:  SignupUserUsecase,
-		SigninUserUsecase:  SigninUserUsecase,
-		SignoutUserUsecase: SignoutUserUsecase,
+		SignupUserUsecase: SignupUserUsecase,
+		SigninUserUsecase: SigninUserUsecase,
 	}
 }
 
@@ -87,5 +83,9 @@ func (h handler) Signin(ctx *gin.Context) {
 }
 
 func (h handler) Signout(ctx *gin.Context) {
-	fmt.Println("signout")
+	ctx.SetCookie("Authorization", "", 0, "", "", false, true)
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "successfully logged out",
+	})
 }

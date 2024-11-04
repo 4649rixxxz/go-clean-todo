@@ -20,7 +20,6 @@ func userRoute(r *ginpkg.RouterGroup) {
 	h := userHandler.NewHandler(
 		userUsecace.NewSignupUserUsecase(userRepo),
 		userUsecace.NewSigninUserUsecase(userRepo),
-		userUsecace.NewSignoutUserUsecase(userRepo),
 	)
 	r.POST("/signup", h.Signup)
 	r.POST("/signin", h.Signin)
