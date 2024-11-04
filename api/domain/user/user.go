@@ -63,6 +63,10 @@ func Reconstruct(
 	}
 }
 
+func (u *User) UserID() uint {
+	return u.userID
+}
+
 func (u *User) Email() string {
 	return u.email
 }

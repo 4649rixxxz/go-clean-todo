@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"fmt"
-
 	userDomain "go-clean-todo/domain/user"
 	"go-clean-todo/infrastructure/mysql"
 
@@ -39,8 +37,18 @@ func (r *userRepository) CreateUser(user *userDomain.User) (*userDomain.User, er
 	), nil
 }
 
-func (r *userRepository) FetchByEmail(email string) error {
-	fmt.Println("email")
+func (r *userRepository) FetchByEmail(email string) (*userDomain.User, error) {
+	var userORM mysql.User
+	if err := r.db.Where("email = ?", email).First(&userORM).Error; err != nil {
+		return nil, err
+	}
 
-	return nil
+	return userDomain.Reconstruct(
+		userORM.UserID,
+		userORM.Email,
+		userORM.Password,
+		userORM.CreatedAt,
+		userORM.UpdatedAt,
+		&userORM.DeletedAt.Time,
+	), nil
 }
