@@ -2,10 +2,10 @@ package server
 
 import (
 	"go-clean-todo/infrastructure/mysql"
+	"go-clean-todo/presentation/settings"
 	"go-clean-todo/server/route"
 	"log"
 
-	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
@@ -21,7 +21,7 @@ func Run() {
 	mysql.Connect()
 	mysql.RunMigration()
 
-	api := gin.Default()
+	api := settings.NewGinEngine()
 	route.InitRoute(api)
 
 	api.Run()

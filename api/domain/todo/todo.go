@@ -8,15 +8,14 @@ import (
 )
 
 type Todo struct {
-	todoID           int
-	userID           int
+	todoID           uint
+	userID           uint
 	title            string
 	description      string
 	attachedFilePath *string
 	completedAt      *time.Time
 	createdAt        time.Time
 	updatedAt        time.Time
-	deletedAt        *time.Time
 }
 
 const (
@@ -27,15 +26,14 @@ const (
 )
 
 func newTodo(
-	todoID int,
-	userID int,
+	todoID uint,
+	userID uint,
 	title string,
 	description string,
 	attachedFilePath *string,
 	completedAt *time.Time,
 	createdAt time.Time,
 	updatedAt time.Time,
-	deletedAt *time.Time,
 ) (*Todo, error) {
 	titleLength := utf8.RuneCountInString(title)
 	if titleLength < titleLengthMin || titleLength > titleLengthMax {
@@ -55,20 +53,35 @@ func newTodo(
 		completedAt:      completedAt,
 		createdAt:        createdAt,
 		updatedAt:        updatedAt,
-		deletedAt:        deletedAt,
 	}, nil
 }
 
+func NewTodo(
+	userID uint,
+	title string,
+	description string,
+) (*Todo, error) {
+	return newTodo(
+		0,
+		userID,
+		title,
+		description,
+		nil,
+		nil,
+		time.Now(),
+		time.Now(),
+	)
+}
+
 func Reconstruct(
-	todoID int,
-	userID int,
+	todoID uint,
+	userID uint,
 	title string,
 	description string,
 	attachedFilePath *string,
 	completedAt *time.Time,
 	createdAt time.Time,
 	updatedAt time.Time,
-	deletedAt *time.Time,
 ) (*Todo, error) {
 	return newTodo(
 		todoID,
@@ -79,6 +92,36 @@ func Reconstruct(
 		completedAt,
 		createdAt,
 		updatedAt,
-		deletedAt,
 	)
+}
+
+func (t *Todo) TodoID() uint {
+	return t.todoID
+}
+
+func (t *Todo) UserID() uint {
+	return t.userID
+}
+
+func (t *Todo) Title() string {
+	return t.title
+}
+
+func (t *Todo) Description() string {
+	return t.description
+}
+func (t *Todo) AttachedFilePath() *string {
+	return t.attachedFilePath
+}
+
+func (t *Todo) CompletedAt() *time.Time {
+	return t.completedAt
+}
+
+func (t *Todo) CreatedAt() time.Time {
+	return t.createdAt
+}
+
+func (t *Todo) UpdatedAt() time.Time {
+	return t.updatedAt
 }

@@ -23,6 +23,8 @@ func NewHandler(
 	}
 }
 
+const cookieName = "go-clean-todo"
+
 func (h handler) Signup(ctx *gin.Context) {
 	var body struct {
 		Email    string
@@ -77,13 +79,13 @@ func (h handler) Signin(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie("Authorization", jwtToken, 3600*24*30, "", "", false, true)
+	ctx.SetCookie(cookieName, jwtToken, 3600*24*30, "", "", false, true)
 	ctx.JSON(http.StatusOK, gin.H{})
 
 }
 
 func (h handler) Signout(ctx *gin.Context) {
-	ctx.SetCookie("Authorization", "", 0, "", "", false, true)
+	ctx.SetCookie(cookieName, "", 0, "", "", false, true)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "successfully logged out",

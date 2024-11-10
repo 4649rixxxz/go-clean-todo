@@ -7,6 +7,7 @@ import (
 	"go-clean-todo/presentation/middleware"
 	todoHandler "go-clean-todo/presentation/todo"
 	userHandler "go-clean-todo/presentation/user"
+	todoUsecase "go-clean-todo/usecase/todo"
 	userUsecace "go-clean-todo/usecase/user"
 )
 
@@ -31,6 +32,9 @@ func userRoute(r *ginpkg.RouterGroup) {
 
 func todoRoute(r *ginpkg.RouterGroup) {
 	todos := r.Group("/todos", middleware.Auth())
-	handler := todoHandler.NewHandler()
-	todos.GET("", handler.Index)
+	todoRepo := repository.NewTodoRepository()
+	handler := todoHandler.NewHandler(
+		todoUsecase.NewCreateTodoUsecase(todoRepo),
+	)
+	todos.POST("", handler.Create)
 }

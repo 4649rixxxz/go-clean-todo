@@ -14,7 +14,6 @@ type User struct {
 	password  string
 	createdAt time.Time
 	updatedAt time.Time
-	deletedAt *time.Time
 }
 
 const (
@@ -41,7 +40,6 @@ func NewUser(
 		password:  password,
 		createdAt: time.Now(),
 		updatedAt: time.Now(),
-		deletedAt: nil,
 	}, nil
 }
 
@@ -51,7 +49,6 @@ func Reconstruct(
 	password string,
 	createdAt time.Time,
 	updatedAt time.Time,
-	deletedAt *time.Time,
 ) *User {
 	return &User{
 		userID:    userID,
@@ -59,7 +56,6 @@ func Reconstruct(
 		password:  password,
 		createdAt: createdAt,
 		updatedAt: updatedAt,
-		deletedAt: deletedAt,
 	}
 }
 

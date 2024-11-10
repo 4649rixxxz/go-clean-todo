@@ -33,7 +33,6 @@ func (r *userRepository) CreateUser(user *userDomain.User) (*userDomain.User, er
 		userORM.Password,
 		userORM.CreatedAt,
 		userORM.UpdatedAt,
-		&userORM.DeletedAt.Time,
 	), nil
 }
 
@@ -49,7 +48,6 @@ func (r *userRepository) FetchByEmail(email string) (*userDomain.User, error) {
 		userORM.Password,
 		userORM.CreatedAt,
 		userORM.UpdatedAt,
-		&userORM.DeletedAt.Time,
 	), nil
 }
 
@@ -65,6 +63,5 @@ func (r *userRepository) FetchByUserID(userID uint) (*userDomain.User, error) {
 		userORM.Password,
 		userORM.CreatedAt,
 		userORM.UpdatedAt,
-		&userORM.DeletedAt.Time,
 	), nil
 }
