@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"go-clean-todo/presentation/settings"
 	userUsecase "go-clean-todo/usecase/user"
 )
 
@@ -26,18 +27,13 @@ func NewHandler(
 const cookieName = "go-clean-todo"
 
 func (h handler) Signup(ctx *gin.Context) {
-	var body struct {
-		Email    string
-		Password string
-	}
+	var body SignupParams
 
-	if ctx.Bind(&body) != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to read body",
-		})
-
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		settings.ReturnStatusBadRequestForInvalidBody(ctx, err)
 		return
 	}
+
 	dto := userUsecase.SignupUserUsecaseDTO{
 		Email:    body.Email,
 		Password: body.Password,

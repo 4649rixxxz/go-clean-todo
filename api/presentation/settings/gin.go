@@ -28,54 +28,48 @@ func ReturnStatusNoContent(ctx *gin.Context) {
 	ctx.Writer.WriteHeader(http.StatusNoContent)
 }
 
-func ReturnStatusBadRequest(ctx *gin.Context, err error) {
-	returnAbortWith(ctx, http.StatusBadRequest, err)
-}
-
-func ReturnBadRequest(ctx *gin.Context, err error) {
-	ReturnStatusBadRequest(ctx, err)
-}
-
-func ReturnStatusUnauthorized(ctx *gin.Context, err error) {
-	returnAbortWith(ctx, http.StatusUnauthorized, err)
-}
-
-func ReturnUnauthorized(ctx *gin.Context, err error) {
-	ReturnStatusUnauthorized(ctx, err)
-}
-
-func ReturnStatusForbidden(ctx *gin.Context, err error) {
-	returnAbortWith(ctx, http.StatusForbidden, err)
-}
-
-func ReturnForbidden(ctx *gin.Context, err error) {
-	ReturnStatusForbidden(ctx, err)
-}
-
-func ReturnStatusNotFound(ctx *gin.Context, err error) {
-	returnAbortWith(ctx, http.StatusNotFound, err)
-}
-
-func ReturnNotFound(ctx *gin.Context, err error) {
-	ReturnStatusNotFound(ctx, err)
-}
-
-func ReturnStatusInternalServerError(ctx *gin.Context, err error) {
-	returnAbortWith(ctx, http.StatusInternalServerError, err)
-}
-
-func ReturnError(ctx *gin.Context, err error) {
-	ctx.Error(err)
-}
-
-func returnAbortWith(ctx *gin.Context, code int, err error) {
+func ReturnStatusBadRequestForInvalidBody(ctx *gin.Context, err error) {
 	var msg string
 	if err != nil {
 		msg = err.Error()
 	}
 
-	ctx.AbortWithStatusJSON(code, gin.H{
-		"code": code,
-		"msg":  msg,
+	ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		"msg": msg,
 	})
+}
+
+type ErrorResponse struct {
+	Field   string `json:"field"`
+	Message string `json:"message"`
+}
+
+func returnAbortWith(ctx *gin.Context, code int, errors []ErrorResponse) {
+	ctx.AbortWithStatusJSON(code, gin.H{
+		"errors": errors,
+	})
+}
+
+func ReturnStatusBadRequest(ctx *gin.Context, errors []ErrorResponse) {
+	returnAbortWith(ctx, http.StatusBadRequest, errors)
+}
+
+func ReturnStatusUnauthorized(ctx *gin.Context, errors []ErrorResponse) {
+	returnAbortWith(ctx, http.StatusUnauthorized, errors)
+}
+
+func ReturnStatusForbidden(ctx *gin.Context, errors []ErrorResponse) {
+	returnAbortWith(ctx, http.StatusForbidden, errors)
+}
+
+func ReturnStatusNotFound(ctx *gin.Context, errors []ErrorResponse) {
+	returnAbortWith(ctx, http.StatusNotFound, errors)
+}
+
+func ReturnStatusInternalServerError(ctx *gin.Context, errors []ErrorResponse) {
+	returnAbortWith(ctx, http.StatusInternalServerError, errors)
+}
+
+func ReturnError(ctx *gin.Context, err error) {
+	ctx.Error(err)
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"go-clean-todo/pkg/validator"
 	"go-clean-todo/presentation/settings"
 	todoUsecase "go-clean-todo/usecase/todo"
 )
@@ -22,13 +23,15 @@ func NewHandler(
 }
 
 func (h handler) Create(ctx *gin.Context) {
-	// データ型のバリデーション
 	var body CreateTodoParams
-	if ctx.Bind(&body) != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to read body",
-		})
-
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		settings.ReturnStatusBadRequestForInvalidBody(ctx, err)
+		return
+	}
+	validate := validator.GetValidator()
+	if err := validate.Struct(body); err != nil {
+		errMsgs := validator.MakeValidationErrMessages(err)
+		settings.ReturnStatusBadRequest(ctx, errMsgs)
 		return
 	}
 	userIDFromCtx, isExisting := ctx.Get("user_id")
