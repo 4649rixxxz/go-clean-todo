@@ -39,9 +39,7 @@ func (h handler) Signup(ctx *gin.Context) {
 		Password: body.Password,
 	}
 	if err := h.SignupUserUsecase.Run(dto); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to create user",
-		})
+		settings.ConvertUsecaseErrorToHTTPError(ctx, err)
 
 		return
 	}

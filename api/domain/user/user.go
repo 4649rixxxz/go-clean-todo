@@ -24,14 +24,14 @@ const (
 func NewUser(
 	email string,
 	password string,
-) (*User, error) {
+) (*User, errDomain.DomainErrorI) {
 	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	if !re.MatchString(email) {
-		return nil, errDomain.NewError("メールアドレスが不正です。")
+		return nil, errDomain.NewDomainError("email", "メールアドレスが不正です。")
 	}
 	passwordLength := utf8.RuneCountInString(password)
 	if passwordLength < passwordLengthMin || passwordLength > passwordLengthMax {
-		return nil, errDomain.NewError("パスワードの長さは、10文字以上30文字以内でお願いします。")
+		return nil, errDomain.NewDomainError("password", "パスワードの長さは、10文字以上30文字以内でお願いします。")
 	}
 
 	return &User{

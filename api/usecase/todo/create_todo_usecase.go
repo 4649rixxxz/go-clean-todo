@@ -2,6 +2,7 @@ package todo
 
 import (
 	todoDomain "go-clean-todo/domain/todo"
+	"go-clean-todo/usecase"
 	"time"
 )
 
@@ -17,18 +18,18 @@ func NewCreateTodoUsecase(
 	}
 }
 
-func (uc *CreateTodoUsecase) Run(inputDTO CreateTodoUsecaseInputDTO) (*CreateTodoUsecaseOutputDTO, error) {
+func (uc *CreateTodoUsecase) Run(inputDTO CreateTodoUsecaseInputDTO) (*CreateTodoUsecaseOutputDTO, usecase.UsecaseErrorI) {
 	todo, todoErr := todoDomain.NewTodo(
 		inputDTO.UserID,
 		inputDTO.Title,
 		inputDTO.Description,
 	)
 	if todoErr != nil {
-		return nil, todoErr
+		return nil, usecase.NewInvalidInputError(todoErr.Field(), todoErr.Error())
 	}
 	createdTodo, createErr := uc.todoRepo.CreateTodo(todo)
 	if createErr != nil {
-		return nil, createErr
+		return nil, usecase.NewInternalServerError("todoの新規作成に失敗しました。")
 	}
 	outputDTO := &CreateTodoUsecaseOutputDTO{
 		TodoID:           createdTodo.TodoID(),

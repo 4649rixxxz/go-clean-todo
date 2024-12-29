@@ -1,7 +1,7 @@
 package route
 
 import (
-	ginpkg "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 
 	"go-clean-todo/infrastructure/mysql/repository"
 	"go-clean-todo/presentation/middleware"
@@ -11,7 +11,7 @@ import (
 	userUsecace "go-clean-todo/usecase/user"
 )
 
-func InitRoute(api *ginpkg.Engine) {
+func InitRoute(api *gin.Engine) {
 	v1 := api.Group("/v1")
 	{
 		userRoute(v1)
@@ -19,7 +19,7 @@ func InitRoute(api *ginpkg.Engine) {
 	}
 }
 
-func userRoute(r *ginpkg.RouterGroup) {
+func userRoute(r *gin.RouterGroup) {
 	userRepo := repository.NewUserRepository()
 	handler := userHandler.NewHandler(
 		userUsecace.NewSignupUserUsecase(userRepo),
@@ -30,7 +30,7 @@ func userRoute(r *ginpkg.RouterGroup) {
 	r.POST("/signout", handler.Signout)
 }
 
-func todoRoute(r *ginpkg.RouterGroup) {
+func todoRoute(r *gin.RouterGroup) {
 	todos := r.Group("/todos", middleware.Auth())
 	todoRepo := repository.NewTodoRepository()
 	handler := todoHandler.NewHandler(

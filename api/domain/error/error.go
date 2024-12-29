@@ -1,17 +1,26 @@
 package error
 
-type Error struct {
-	description string
+type DomainErrorI interface {
+	Field() string
+	Error() string
 }
 
-func (e *Error) Error() string {
-	return e.description
+type DomainError struct {
+	field   string
+	message string
 }
 
-func NewError(s string) *Error {
-	return &Error{
-		description: s,
+func (e *DomainError) Field() string {
+	return e.field
+}
+
+func (e *DomainError) Error() string {
+	return e.message
+}
+
+func NewDomainError(field, message string) DomainErrorI {
+	return &DomainError{
+		field:   field,
+		message: message,
 	}
 }
-
-var NotFoundErr = NewError("not found")

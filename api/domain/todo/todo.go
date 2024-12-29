@@ -34,14 +34,14 @@ func newTodo(
 	completedAt *time.Time,
 	createdAt time.Time,
 	updatedAt time.Time,
-) (*Todo, error) {
+) (*Todo, errDomain.DomainErrorI) {
 	titleLength := utf8.RuneCountInString(title)
 	if titleLength < titleLengthMin || titleLength > titleLengthMax {
-		return nil, errDomain.NewError("タイトルは、0文字以上50文字以内です。")
+		return nil, errDomain.NewDomainError("title", "タイトルは、0文字以上50文字以内です。")
 	}
 	descriptionLength := utf8.RuneCountInString(description)
 	if descriptionLength < titleLengthMin || descriptionLength > titleLengthMax {
-		return nil, errDomain.NewError("内容は、0文字以上50文字以内です。")
+		return nil, errDomain.NewDomainError("description", "内容は、0文字以上50文字以内です。")
 	}
 
 	return &Todo{
@@ -60,7 +60,7 @@ func NewTodo(
 	userID uint,
 	title string,
 	description string,
-) (*Todo, error) {
+) (*Todo, errDomain.DomainErrorI) {
 	return newTodo(
 		0,
 		userID,
@@ -82,7 +82,7 @@ func Reconstruct(
 	completedAt *time.Time,
 	createdAt time.Time,
 	updatedAt time.Time,
-) (*Todo, error) {
+) (*Todo, errDomain.DomainErrorI) {
 	return newTodo(
 		todoID,
 		userID,

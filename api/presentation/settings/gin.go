@@ -1,6 +1,7 @@
 package settings
 
 import (
+	"go-clean-todo/usecase"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
@@ -44,32 +45,57 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-func returnAbortWith(ctx *gin.Context, code int, errors []ErrorResponse) {
+func returnAbortWith(ctx *gin.Context, code int, message string, errors []ErrorResponse) {
 	ctx.AbortWithStatusJSON(code, gin.H{
-		"errors": errors,
+		"message": message,
+		"errors":  errors,
 	})
 }
 
 func ReturnStatusBadRequest(ctx *gin.Context, errors []ErrorResponse) {
-	returnAbortWith(ctx, http.StatusBadRequest, errors)
+	returnAbortWith(ctx, http.StatusBadRequest, "Bad Request", errors)
 }
 
 func ReturnStatusUnauthorized(ctx *gin.Context, errors []ErrorResponse) {
-	returnAbortWith(ctx, http.StatusUnauthorized, errors)
+	returnAbortWith(ctx, http.StatusUnauthorized, "Unauthorized", errors)
 }
 
 func ReturnStatusForbidden(ctx *gin.Context, errors []ErrorResponse) {
-	returnAbortWith(ctx, http.StatusForbidden, errors)
+	returnAbortWith(ctx, http.StatusForbidden, "Forbidden", errors)
 }
 
 func ReturnStatusNotFound(ctx *gin.Context, errors []ErrorResponse) {
-	returnAbortWith(ctx, http.StatusNotFound, errors)
+	returnAbortWith(ctx, http.StatusNotFound, "Not Found", errors)
 }
 
-func ReturnStatusInternalServerError(ctx *gin.Context, errors []ErrorResponse) {
-	returnAbortWith(ctx, http.StatusInternalServerError, errors)
+func ReturnStatusInternalServerError(ctx *gin.Context, message string) {
+	returnAbortWith(ctx, http.StatusInternalServerError, message, []ErrorResponse{})
 }
 
 func ReturnError(ctx *gin.Context, err error) {
 	ctx.Error(err)
+}
+
+func ConvertUsecaseErrorToHTTPError(ctx *gin.Context, e usecase.UsecaseErrorI) {
+	switch e.Code() {
+	case usecase.InvalidInputError:
+		ReturnStatusBadRequest(
+			ctx,
+			[]ErrorResponse{
+				{Field: e.Field(), Message: e.Error()},
+			},
+		)
+	case usecase.ResourceNotFoundError:
+		ReturnStatusNotFound(
+			ctx,
+			[]ErrorResponse{
+				{Field: e.Field(), Message: e.Error()},
+			},
+		)
+	default:
+		ReturnStatusInternalServerError(
+			ctx,
+			e.Error(),
+		)
+	}
 }

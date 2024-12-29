@@ -58,9 +58,7 @@ func (h handler) Create(ctx *gin.Context) {
 	}
 	outputDTO, err := h.createTodoUsecase.Run(inputDTO)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to create todo",
-		})
+		settings.ConvertUsecaseErrorToHTTPError(ctx, err)
 
 		return
 	}
