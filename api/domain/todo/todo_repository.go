@@ -1,5 +1,5 @@
 package todo
 
 type TodoRepository interface {
-	CreateTodo(todo *Todo) (*Todo, error)
+	CreateTodo(todo *Todo) error
 }

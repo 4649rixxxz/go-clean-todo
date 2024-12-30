@@ -27,19 +27,18 @@ func (uc *CreateTodoUsecase) Run(inputDTO CreateTodoUsecaseInputDTO) (*CreateTod
 	if todoErr != nil {
 		return nil, usecase.NewInvalidInputError(todoErr.Field(), todoErr.Error())
 	}
-	createdTodo, createErr := uc.todoRepo.CreateTodo(todo)
-	if createErr != nil {
+	if createErr := uc.todoRepo.CreateTodo(todo); createErr != nil {
 		return nil, usecase.NewInternalServerError("todoの新規作成に失敗しました。")
 	}
 	outputDTO := &CreateTodoUsecaseOutputDTO{
-		TodoID:           createdTodo.TodoID(),
-		UserID:           createdTodo.UserID(),
-		Title:            createdTodo.Title(),
-		Description:      createdTodo.Description(),
-		AttachedFilePath: createdTodo.AttachedFilePath(),
-		CompletedAt:      createdTodo.CompletedAt(),
-		CreatedAt:        createdTodo.CreatedAt(),
-		UpdatedAt:        createdTodo.UpdatedAt(),
+		TodoID:           todo.TodoID(),
+		UserID:           todo.UserID(),
+		Title:            todo.Title(),
+		Description:      todo.Description(),
+		AttachedFilePath: todo.AttachedFilePath(),
+		CompletedAt:      todo.CompletedAt(),
+		CreatedAt:        todo.CreatedAt(),
+		UpdatedAt:        todo.UpdatedAt(),
 	}
 
 	return outputDTO, nil

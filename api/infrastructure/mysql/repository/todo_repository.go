@@ -17,17 +17,17 @@ func NewTodoRepository() todoDomain.TodoRepository {
 	}
 }
 
-func (r *todoRepository) CreateTodo(todo *todoDomain.Todo) (*todoDomain.Todo, error) {
+func (r *todoRepository) CreateTodo(todo *todoDomain.Todo) error {
 	todoORM := mysql.Todo{
 		UserID:      todo.UserID(),
 		Title:       todo.Title(),
 		Description: todo.Description(),
 	}
 	if err := r.db.Create(&todoORM).Error; err != nil {
-		return nil, err
+		return err
 	}
 
-	return todoDomain.Reconstruct(
+	todo.ReconstructWithoutValidation(
 		todoORM.TodoID,
 		todoORM.UserID,
 		todoORM.Title,
@@ -37,4 +37,6 @@ func (r *todoRepository) CreateTodo(todo *todoDomain.Todo) (*todoDomain.Todo, er
 		todoORM.CreatedAt,
 		todoORM.UpdatedAt,
 	)
+
+	return nil
 }

@@ -95,6 +95,26 @@ func Reconstruct(
 	)
 }
 
+func (t *Todo) ReconstructWithoutValidation(
+	todoID uint,
+	userID uint,
+	title string,
+	description string,
+	attachedFilePath *string,
+	completedAt *time.Time,
+	createdAt time.Time,
+	updatedAt time.Time,
+) {
+	t.todoID = todoID
+	t.userID = userID
+	t.title = title
+	t.description = description
+	t.attachedFilePath = attachedFilePath
+	t.completedAt = completedAt
+	t.createdAt = createdAt
+	t.updatedAt = updatedAt
+}
+
 func (t *Todo) TodoID() uint {
 	return t.todoID
 }
