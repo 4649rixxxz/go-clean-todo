@@ -36,7 +36,7 @@ func ReturnStatusBadRequestForInvalidBody(ctx *gin.Context, err error) {
 	}
 
 	ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-		"msg": msg,
+		"message": msg,
 	})
 }
 
@@ -45,8 +45,8 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-func returnAbortWith(ctx *gin.Context, code int, message string, errors []ErrorResponse) {
-	ctx.AbortWithStatusJSON(code, gin.H{
+func returnAbortWith(ctx *gin.Context, ResponseStatus int, message string, errors []ErrorResponse) {
+	ctx.AbortWithStatusJSON(ResponseStatus, gin.H{
 		"message": message,
 		"errors":  errors,
 	})

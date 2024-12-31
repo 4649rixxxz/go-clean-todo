@@ -40,7 +40,6 @@ func (h handler) Signup(ctx *gin.Context) {
 	}
 	if err := h.SignupUserUsecase.Run(dto); err != nil {
 		settings.ConvertUsecaseErrorToHTTPError(ctx, err)
-
 		return
 	}
 
@@ -53,11 +52,8 @@ func (h handler) Signin(ctx *gin.Context) {
 		Password string
 	}
 
-	if ctx.Bind(&body) != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to read body",
-		})
-
+	if err := ctx.Bind(&body); err != nil {
+		settings.ReturnStatusBadRequestForInvalidBody(ctx, err)
 		return
 	}
 	dto := userUsecase.SigninUserUsecaseDTO{
@@ -66,16 +62,12 @@ func (h handler) Signin(ctx *gin.Context) {
 	}
 	jwtToken, err := h.SigninUserUsecase.Run(dto)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid email or password",
-		})
-
+		settings.ConvertUsecaseErrorToHTTPError(ctx, err)
 		return
 	}
 
 	ctx.SetCookie(cookieName, jwtToken, 3600*24*30, "", "", false, true)
 	ctx.JSON(http.StatusOK, gin.H{})
-
 }
 
 func (h handler) Signout(ctx *gin.Context) {

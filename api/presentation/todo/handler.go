@@ -1,8 +1,6 @@
 package todo
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 
 	"go-clean-todo/pkg/validator"
@@ -37,18 +35,12 @@ func (h handler) Create(ctx *gin.Context) {
 	userIDFromCtx, isExisting := ctx.Get("user_id")
 	// Todo 書き方が冗長なので修正したい
 	if !isExisting {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to create todo",
-		})
-
+		settings.ReturnStatusInternalServerError(ctx, "Failed to create todo")
 		return
 	}
 	userID, ok := userIDFromCtx.(uint)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to create todo",
-		})
-
+		settings.ReturnStatusInternalServerError(ctx, "Failed to create todo")
 		return
 	}
 	inputDTO := todoUsecase.CreateTodoUsecaseInputDTO{
@@ -59,7 +51,6 @@ func (h handler) Create(ctx *gin.Context) {
 	outputDTO, err := h.createTodoUsecase.Run(inputDTO)
 	if err != nil {
 		settings.ConvertUsecaseErrorToHTTPError(ctx, err)
-
 		return
 	}
 

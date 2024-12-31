@@ -27,7 +27,14 @@ func (uc *SignupUserUsecase) Run(dto SignupUserUsecaseDTO) usecase.UsecaseErrorI
 	if err != nil {
 		return usecase.NewInvalidInputError(err.Field(), err.Error())
 	}
+	record, fetchErr := uc.userRepo.FetchByEmail(user.Email())
+	if record != nil {
+		return usecase.NewInvalidInputError("email", "このメールアドレスはすでに使用されています。")
+	}
 	signupErrMsg := "サインアップに失敗しました。お手数ですが、もう一度お試しください。"
+	if fetchErr != nil {
+		return usecase.NewInternalServerError(signupErrMsg)
+	}
 	hash, passwordErr := bcrypt.GenerateFromPassword([]byte(dto.Password), 10)
 	if passwordErr != nil {
 		return usecase.NewInternalServerError(signupErrMsg)

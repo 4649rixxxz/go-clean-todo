@@ -95,7 +95,7 @@ func Reconstruct(
 	)
 }
 
-func (t *Todo) ReconstructWithoutValidation(
+func (t *Todo) Set(
 	todoID uint,
 	userID uint,
 	title string,

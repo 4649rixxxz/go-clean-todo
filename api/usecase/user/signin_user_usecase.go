@@ -2,6 +2,7 @@ package user
 
 import (
 	userDomain "go-clean-todo/domain/user"
+	"go-clean-todo/usecase"
 	"os"
 	"time"
 
@@ -26,14 +27,14 @@ func NewSigninUserUsecase(
 	}
 }
 
-func (uc *SigninUserUsecase) Run(dto SigninUserUsecaseDTO) (string, error) {
+func (uc *SigninUserUsecase) Run(dto SigninUserUsecaseDTO) (string, usecase.UsecaseErrorI) {
 	user, err := uc.userRepo.FetchByEmail(dto.Email)
 	if err != nil {
-		return "", err
+		return "", usecase.NewInvalidInputError("email", "メールアドレスまたはパスワードが間違っています。")
 	}
 	passErr := bcrypt.CompareHashAndPassword([]byte(user.Password()), []byte(dto.Password))
 	if passErr != nil {
-		return "", passErr
+		return "", usecase.NewInvalidInputError("password", "メールアドレスまたはパスワードが間違っています。")
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.UserID(),
@@ -41,7 +42,7 @@ func (uc *SigninUserUsecase) Run(dto SigninUserUsecaseDTO) (string, error) {
 	})
 	tokenString, tokenErr := token.SignedString([]byte(os.Getenv("SECRET")))
 	if tokenErr != nil {
-		return "", tokenErr
+		return "", usecase.NewInternalServerError("認証に失敗しました。")
 	}
 
 	return tokenString, nil

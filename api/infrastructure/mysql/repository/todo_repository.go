@@ -27,7 +27,7 @@ func (r *todoRepository) CreateTodo(todo *todoDomain.Todo) error {
 		return err
 	}
 
-	todo.ReconstructWithoutValidation(
+	todo.Set(
 		todoORM.TodoID,
 		todoORM.UserID,
 		todoORM.Title,
