@@ -11,12 +11,6 @@ const (
 	InternalServerError   = "INTERNAL_SERVER_ERROR"
 )
 
-type UsecaseErrorI interface {
-	Code() string
-	Field() string
-	Error() string
-}
-
 type UsecaseError struct {
 	code    string
 	field   *string

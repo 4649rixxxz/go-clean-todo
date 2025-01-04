@@ -27,7 +27,7 @@ func NewSigninUserUsecase(
 	}
 }
 
-func (uc *SigninUserUsecase) Run(dto SigninUserUsecaseDTO) (string, usecase.UsecaseErrorI) {
+func (uc *SigninUserUsecase) Run(dto SigninUserUsecaseDTO) (string, *usecase.UsecaseError) {
 	user, err := uc.userRepo.FetchByEmail(dto.Email)
 	if err != nil {
 		return "", usecase.NewInvalidInputError("email", "メールアドレスまたはパスワードが間違っています。")

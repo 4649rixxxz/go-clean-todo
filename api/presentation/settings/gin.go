@@ -76,7 +76,7 @@ func ReturnError(ctx *gin.Context, err error) {
 	ctx.Error(err)
 }
 
-func ConvertUsecaseErrorToHTTPError(ctx *gin.Context, e usecase.UsecaseErrorI) {
+func ConvertUsecaseErrorToHTTPError(ctx *gin.Context, e *usecase.UsecaseError) {
 	switch e.Code() {
 	case usecase.InvalidInputError:
 		ReturnStatusBadRequest(

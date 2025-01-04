@@ -19,7 +19,7 @@ func NewSignupUserUsecase(
 	}
 }
 
-func (uc *SignupUserUsecase) Run(dto SignupUserUsecaseDTO) usecase.UsecaseErrorI {
+func (uc *SignupUserUsecase) Run(dto SignupUserUsecaseDTO) *usecase.UsecaseError {
 	user, err := userDomain.NewUser(
 		dto.Email,
 		dto.Password,

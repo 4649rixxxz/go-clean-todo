@@ -18,7 +18,7 @@ func NewCreateTodoUsecase(
 	}
 }
 
-func (uc *CreateTodoUsecase) Run(inputDTO CreateTodoUsecaseInputDTO) (*CreateTodoUsecaseOutputDTO, usecase.UsecaseErrorI) {
+func (uc *CreateTodoUsecase) Run(inputDTO CreateTodoUsecaseInputDTO) (*CreateTodoUsecaseOutputDTO, *usecase.UsecaseError) {
 	todo, todoErr := todoDomain.NewTodo(
 		inputDTO.UserID,
 		inputDTO.Title,
